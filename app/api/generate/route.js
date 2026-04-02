@@ -33,6 +33,18 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Topic must be at least 5 characters' }, { status: 400 })
     }
 
+    // ── 0. Guard: check required API keys are set ─────────────────────────────
+    const missingKeys = []
+    if (!process.env.MISTRAL_API_KEY     || process.env.MISTRAL_API_KEY.includes('your_'))     missingKeys.push('MISTRAL_API_KEY')
+    if (!process.env.ELEVENLABS_API_KEY  || process.env.ELEVENLABS_API_KEY.includes('your_'))  missingKeys.push('ELEVENLABS_API_KEY')
+    if (!process.env.INSFORGE_BASE_URL   || !process.env.INSFORGE_API_KEY) missingKeys.push('INSFORGE keys')
+
+    if (missingKeys.length > 0) {
+      return NextResponse.json({
+        error: `Missing API keys: ${missingKeys.join(', ')}. Add them to .env.local and restart the server.`
+      }, { status: 503 })
+    }
+
     // ── 1. Create initial DB record ───────────────────────────────────────────
     const podcast = await createPodcast({ userId, topic, options: { duration, style } })
     podcastId = podcast.id
@@ -101,9 +113,11 @@ export async function POST(request) {
     if (podcastId) {
       await updatePodcast(podcastId, {
         status: 'error',
-        error_message: err.message,
-      }).catch(() => {}) // don't fail on cleanup error
+        error_message: err.message?.slice(0, 500),
+      }).catch(() => {})
     }
+
+    // Surface the real error message to the client
     return NextResponse.json(
       { error: err.message || 'Generation failed. Please try again.' },
       { status: 500 }

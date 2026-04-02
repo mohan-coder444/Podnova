@@ -21,8 +21,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${jakarta.variable} dark`}>
-      <body className="font-sans bg-nova-bg text-nova-text">
+    <html lang="en" className={`${jakarta.variable} dark`} suppressHydrationWarning>
+      <body className="font-sans bg-nova-bg text-nova-text" suppressHydrationWarning>
         {children}
       </body>
     </html>
