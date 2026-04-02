@@ -1,77 +1,93 @@
-:root {
-  --background: #0a0a0a;
-  --foreground: #ffffff;
-  --accent: #6d28d9;
-  --accent-light: #a855f7;
-  --nova-cyan: #06b6d4;
-  --nova-magenta: #ec4899;
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ── */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-nova-bg text-nova-text font-sans antialiased;
+    background-image: radial-gradient(ellipse at 20% 10%, rgba(99,102,241,0.08) 0%, transparent 50%),
+                      radial-gradient(ellipse at 80% 80%, rgba(139,92,246,0.06) 0%, transparent 50%);
+    min-height: 100vh;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+/* ── Components ── */
+@layer components {
+  /* Glass card */
+  .card-glass {
+    @apply bg-nova-card/80 border border-nova-border/50 rounded-2xl;
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+
+  /* Button primary (orange CTA) */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white
+           bg-gradient-to-r from-nova-orange to-nova-amber
+           shadow-glow-orange transition-all duration-200 cursor-pointer
+           hover:shadow-[0_6px_32px_rgba(249,115,22,0.45)] hover:scale-[1.03] active:scale-[0.98]
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nova-orange;
+  }
+
+  /* Button ghost */
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold
+           border border-nova-border text-nova-text/80
+           transition-all duration-200 cursor-pointer
+           hover:border-nova-indigo/60 hover:text-nova-text hover:bg-nova-surface
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nova-indigo;
+  }
+
+  /* Input */
+  .input-nova {
+    @apply w-full bg-nova-surface border border-nova-border rounded-xl px-4 py-3
+           text-nova-text placeholder-nova-dim
+           focus:outline-none focus:border-nova-indigo focus:ring-1 focus:ring-nova-indigo/30
+           transition-colors duration-200;
+  }
+
+  /* Step badge */
+  .step-badge {
+    @apply inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold
+           bg-nova-indigo/20 text-nova-indigo border border-nova-indigo/30;
+  }
+
+  /* Audio waveform bar  */
+  .wave-bar {
+    @apply inline-block w-1 rounded-full bg-nova-indigo;
+    animation: waveform 1.2s ease-in-out infinite;
+  }
+
+  /* Shimmer skeleton */
+  .skeleton {
+    background: linear-gradient(90deg, #1C1C44 25%, #2A2A60 50%, #1C1C44 75%);
+    background-size: 200% 100%;
+    @apply animate-shimmer rounded-lg;
+  }
+
+  /* Status pill */
+  .status-pill {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium;
+  }
+  .status-processing { @apply status-pill bg-nova-indigo/20 text-nova-indigo; }
+  .status-done       { @apply status-pill bg-green-500/20 text-green-400; }
+  .status-error      { @apply status-pill bg-red-500/20 text-red-400; }
+  .status-idle       { @apply status-pill bg-nova-surface text-nova-muted; }
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-}
-
-.nova-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  background: radial-gradient(circle at 20% 20%, rgba(109, 40, 217, 0.15) 0%, transparent 40%),
-              radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.15) 0%, transparent 40%);
-  filter: blur(80px);
-}
-
-.glass {
-  background: rgba(255, 255, 255, 0.05);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1.5rem;
-}
-
-.hero {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 2rem;
-}
-
-.gradient-text {
-  background: linear-gradient(to right, var(--nova-cyan), var(--accent-light), var(--nova-magenta));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-weight: 800;
-  letter-spacing: -2.5px;
-}
-
-.cta-button {
-  padding: 1rem 2.5rem;
-  border-radius: 2rem;
-  background: linear-gradient(135deg, var(--accent), var(--accent-light));
-  color: white;
-  text-decoration: none;
-  font-weight: 600;
-  box-shadow: 0 10px 20px -10px rgba(109, 40, 217, 0.5);
-  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.cta-button:hover {
-  transform: scale(1.05);
-}
+/* ── Custom scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0F0F23; }
+::-webkit-scrollbar-thumb { background: #2A2A60; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #6366F1; }
