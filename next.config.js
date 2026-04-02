@@ -10,13 +10,7 @@ const nextConfig = {
       },
     ],
   },
-  // Increase max body size for audio uploads
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb',
-    },
-    responseLimit: '50mb',
-  },
+
   // Allow CORS for API routes from same origin
   async headers() {
     return [
